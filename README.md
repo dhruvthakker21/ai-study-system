@@ -1,11 +1,8 @@
-<<<<<<< HEAD
+
 # AI Playlist Study System
 
 > Paste any YouTube playlist URL and get AI-generated study notes instantly — powered by Groq LLM, Spring Boot, and Flask.
 
-Built by **Dhruv Thakker** · GEC Rajkot · AI & Data Science · Pre-Final Year
-
----
 
 ## What It Does
 
@@ -27,7 +24,6 @@ User → Spring Boot (8080) → YouTube Data API v3
                           → MySQL Database
 ```
 
----
 
 ## Tech Stack
 
@@ -211,7 +207,7 @@ src/main/resources/
 ## Connect
 
 **Dhruv Thakker** · [GitHub](https://github.com/dhruvthakker21) · GEC Rajkot · AI & Data Science
-=======
+
 # ai-study-system
 This is ai system that gives you summary when you enter youtube url 
->>>>>>> 9480c88d58bff2179525cec6d118955f1bbf6162
+
