@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AI Study System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          background: #fafafa;
+          color: #111;
+          min-height: 100vh;
+        }
+
+        .topbar {
+          border-bottom: 1px solid #e5e5e5;
+          padding: 0 32px;
+          height: 56px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #fff;
+        }
+
+        .logo {
+          font-size: 14px;
+          font-weight: 600;
+          color: #111;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .logo-dot {
+          width: 8px; height: 8px;
+          background: #111;
+          border-radius: 50%;
+        }
+
+        .topbar-right { font-size: 12px; color: #999; }
+
+        .main {
+          max-width: 640px;
+          margin: 0 auto;
+          padding: 56px 24px 80px;
+        }
+
+        .page-header { margin-bottom: 40px; }
+
+        h1 {
+          font-size: 24px;
+          font-weight: 600;
+          color: #111;
+          margin-bottom: 6px;
+          letter-spacing: -0.02em;
+        }
+
+        .page-desc { font-size: 14px; color: #888; line-height: 1.6; }
+
+        .section {
+          background: #fff;
+          border: 1px solid #e5e5e5;
+          border-radius: 10px;
+          padding: 24px;
+          margin-bottom: 16px;
+        }
+
+        .section-label {
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: #999;
+          margin-bottom: 16px;
+        }
+
+        label {
+          display: block;
+          font-size: 13px;
+          font-weight: 500;
+          color: #444;
+          margin-bottom: 6px;
+        }
+
+        .form-group { margin-bottom: 14px; }
+
+        input, select {
+          width: 100%;
+          border: 1px solid #e0e0e0;
+          border-radius: 7px;
+          padding: 10px 12px;
+          font-family: 'Inter', sans-serif;
+          font-size: 14px;
+          color: #111;
+          background: #fff;
+          outline: none;
+          transition: border-color 0.15s;
+        }
+
+        input::placeholder { color: #bbb; }
+        input:focus, select:focus { border-color: #111; }
+        select { cursor: pointer; }
+
+        .row { display: flex; gap: 10px; }
+        .row input { flex: 1; }
+
+        .btn {
+          padding: 10px 18px;
+          border-radius: 7px;
+          font-family: 'Inter', sans-serif;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          border: none;
+          transition: background 0.15s, opacity 0.15s;
+          white-space: nowrap;
+        }
+
+        .btn-primary {
+          background: #111;
+          color: #fff;
+          width: 100%;
+          margin-top: 14px;
+          padding: 11px;
+        }
+
+        .btn-primary:hover { background: #333; }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .btn-secondary {
+          background: #f4f4f4;
+          color: #111;
+          border: 1px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover { background: #eee; }
+
+        .status {
+          display: none;
+          margin-top: 12px;
+          padding: 10px 14px;
+          border-radius: 7px;
+          font-size: 13px;
+          background: #f4f4f4;
+          color: #555;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .status.show { display: flex; }
+        .status.error { background: #fff0f0; color: #c00; }
+        .status.success { background: #f0faf4; color: #1a7a3f; }
+
+        .spinner {
+          width: 14px; height: 14px;
+          border: 1.5px solid #ddd;
+          border-top-color: #555;
+          border-radius: 50%;
+          animation: spin 0.7s linear infinite;
+          flex-shrink: 0;
+        }
+
+        .results {
+          display: none;
+          background: #fff;
+          border: 1px solid #e5e5e5;
+          border-radius: 10px;
+          overflow: hidden;
+          margin-bottom: 16px;
+        }
+
+        .results.show { display: block; }
+
+        .results-header {
+          padding: 16px 24px;
+          border-bottom: 1px solid #e5e5e5;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .results-title { font-size: 14px; font-weight: 600; color: #111; }
+        .results-meta { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+        .stats { display: flex; border-bottom: 1px solid #e5e5e5; }
+
+        .stat {
+          flex: 1;
+          padding: 14px 20px;
+          border-right: 1px solid #e5e5e5;
+        }
+
+        .stat:last-child { border-right: none; }
+
+        .stat-num {
+          font-size: 20px;
+          font-weight: 600;
+          color: #111;
+          letter-spacing: -0.02em;
+        }
+
+        .stat-lbl {
+          font-size: 11px;
+          color: #aaa;
+          margin-top: 2px;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+        }
+
+        .notes-body {
+          padding: 24px;
+          font-size: 14px;
+          line-height: 1.8;
+          color: #333;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          max-height: 500px;
+          overflow-y: auto;
+        }
+
+        .notes-body::-webkit-scrollbar { width: 4px; }
+        .notes-body::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 4px; }
+
+        .footer { text-align: center; font-size: 12px; color: #ccc; margin-top: 48px; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 500px) {
+          .stats { flex-direction: column; }
+          .stat { border-right: none; border-bottom: 1px solid #e5e5e5; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="logo">
+        <div class="logo-dot"></div>
+        AI Study System
+    </div>
+    <div class="topbar-right">Dhruv Thakker · GEC Rajkot</div>
+</div>
+
+<div class="main">
+
+    <div class="page-header">
+        <h1>Playlist Study Notes</h1>
+        <p class="page-desc">Paste a YouTube playlist URL to generate AI-powered study notes using Groq.</p>
+    </div>
+
+    <div class="section">
+        <div class="section-label">Analyze Playlist</div>
+        <div class="form-group">
+            <label>Playlist URL</label>
+            <input type="text" id="playlistUrl" placeholder="https://www.youtube.com/playlist?list=..."/>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+            <label>Summary Language</label>
+            <select id="language">
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Gujarati">Gujarati</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" id="analyzeBtn" onclick="analyzePlaylist()">Generate Notes</button>
+        <div class="status" id="analyzeStatus">
+            <div class="spinner" id="analyzeSpinner"></div>
+            <span id="analyzeText"></span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-label">Analyze Single Video</div>
+        <div class="form-group">
+            <label>Video URL</label>
+            <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..."/>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+            <label>Summary Language</label>
+            <select id="videoLanguage">
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Gujarati">Gujarati</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" id="videoBtn" onclick="analyzeVideo()">Analyze Video</button>
+        <div class="status" id="videoStatus">
+            <div class="spinner" id="videoSpinner"></div>
+            <span id="videoText"></span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-label">Retrieve Notes</div>
+        <div class="form-group" style="margin-bottom:0">
+            <label>Playlist Database ID</label>
+            <div class="row">
+                <input type="number" id="playlistId" placeholder="e.g. 1"/>
+                <button class="btn btn-secondary" onclick="getNotes()">Fetch</button>
+            </div>
+        </div>
+        <div class="status" id="fetchStatus">
+            <div class="spinner" id="fetchSpinner"></div>
+            <span id="fetchText"></span>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <div class="results-header">
+            <div>
+                <div class="results-title">Study Notes</div>
+                <div class="results-meta" id="resultsMeta"></div>
+            </div>
+            <button class="btn btn-secondary" onclick="copyNotes()" id="copyBtn">Copy</button>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num" id="statVideos">—</div>
+                <div class="stat-lbl">Videos</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num" id="statWords">—</div>
+                <div class="stat-lbl">Words</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num" id="statSections">—</div>
+                <div class="stat-lbl">Sections</div>
+            </div>
+        </div>
+        <div class="notes-body" id="notesBody"></div>
+    </div>
+
+    <div class="footer">AI Study System · Spring Boot + Flask + Groq</div>
+</div>
+
+<script>
+    const API = 'http://localhost:8080/api';
+
+    async function analyzePlaylist() {
+      const url = document.getElementById('playlistUrl').value.trim();
+      const lang = document.getElementById('language').value;
+      const btn = document.getElementById('analyzeBtn');
+
+      if (!url || !url.includes('list=')) {
+        setStatus('analyzeStatus', 'analyzeText', 'analyzeSpinner', 'Please enter a valid YouTube playlist URL.', 'error', false);
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus('analyzeStatus', 'analyzeText', 'analyzeSpinner', 'Processing... this may take a few minutes depending on playlist size.', '', true);
+
+      try {
+        const res = await fetch(`${API}/analyze-playlist`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ playlistUrl: url, language: lang })
+        });
+        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+        setStatus('analyzeStatus', 'analyzeText', 'analyzeSpinner', 'Done. Use the playlist DB ID to fetch your notes below.', 'success', false);
+      } catch (e) {
+        setStatus('analyzeStatus', 'analyzeText', 'analyzeSpinner', e.message, 'error', false);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function getNotes() {
+      const id = document.getElementById('playlistId').value.trim();
+      if (!id) {
+        setStatus('fetchStatus', 'fetchText', 'fetchSpinner', 'Enter a playlist ID.', 'error', false);
+        return;
+      }
+      setStatus('fetchStatus', 'fetchText', 'fetchSpinner', 'Fetching from database...', '', true);
+      try {
+        const res = await fetch(`${API}/playlist/${id}/notes`);
+        if (!res.ok) throw new Error(`No notes found for ID ${id}`);
+        const notes = await res.text();
+        showResults(id, notes);
+        document.getElementById('fetchStatus').classList.remove('show');
+      } catch (e) {
+        setStatus('fetchStatus', 'fetchText', 'fetchSpinner', e.message, 'error', false);
+      }
+    }
+
+    function showResults(id, notes) {
+      const videos = (notes.match(/^Video:/gm) || []).length;
+      const words = notes.trim().split(/\s+/).length;
+      document.getElementById('resultsMeta').textContent = `Playlist ID: ${id}`;
+      document.getElementById('notesBody').textContent = notes;
+      document.getElementById('statVideos').textContent = videos;
+      document.getElementById('statWords').textContent = words.toLocaleString();
+      document.getElementById('statSections').textContent = videos;
+      const section = document.getElementById('resultsSection');
+      section.classList.add('show');
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function copyNotes() {
+      navigator.clipboard.writeText(document.getElementById('notesBody').textContent).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+      });
+    }
+
+    async function analyzeVideo() {
+  const url = document.getElementById('videoUrl').value.trim();
+  const lang = document.getElementById('videoLanguage').value;
+  const btn = document.getElementById('videoBtn');
+
+  if (!url) {
+    setStatus('videoStatus', 'videoText', 'videoSpinner', 'Please enter a video URL.', 'error', false);
+    return;
+  }
+
+  btn.disabled = true;
+  setStatus('videoStatus', 'videoText', 'videoSpinner', 'Processing video...', '', true);
+
+  try {
+    const res = await fetch(`${API}/analyze-video`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ videoUrl: url, language: lang })
+    });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const summary = await res.text();
+    setStatus('videoStatus', 'videoText', 'videoSpinner', `Done! Summary: ${summary}`, 'success', false);
+  } catch (e) {
+    setStatus('videoStatus', 'videoText', 'videoSpinner', e.message, 'error', false);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+    function setStatus(barId, textId, spinnerId, msg, type, loading) {
+      const bar = document.getElementById(barId);
+      bar.className = 'status show' + (type ? ' ' + type : '');
+      document.getElementById(textId).textContent = msg;
+      document.getElementById(spinnerId).style.display = loading ? 'block' : 'none';
+    }
+
+    document.getElementById('playlistUrl').addEventListener('keypress', e => {
+      if (e.key === 'Enter') analyzePlaylist();
+    });
+</script>
+</body>
+</html>
