@@ -287,7 +287,7 @@ public class PlaylistService {
                 "max_tokens", 300,
                 "messages", List.of(
                         Map.of("role", "user",
-                                "content", "Summarize the following content in " + language + " language, in 3-4 sentences: " + inputText)
+                                "content", "Summarize the following content in " + language + " language, in 3-4 sentences and also make like topic wise so useful, for study notes: " + inputText)
                 )
         );
 
