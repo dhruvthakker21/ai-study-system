@@ -1,0 +1,32 @@
+services:
+  # Flask transcript service
+  - type: web
+    name: ai-study-flask
+    runtime: python
+    plan: free
+    rootDir: flask-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /health
+
+  # Spring Boot main app (public link people will open)
+  - type: web
+    name: ai-study-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: AI_SERVICE_URL
+        value: https://ai-study-flask.onrender.com
+      - key: youtube_api_key
+        sync: false
+      - key: groq_api
+        sync: false
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
