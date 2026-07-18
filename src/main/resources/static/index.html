@@ -364,7 +364,8 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ playlistUrl: url, language: lang })
         });
-        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+        const bodyText = await res.text();
+        if (!res.ok) throw new Error(bodyText || `Server returned ${res.status}`);
         setStatus('analyzeStatus', 'analyzeText', 'analyzeSpinner', 'Done. Use the playlist DB ID to fetch your notes below.', 'success', false);
       } catch (e) {
         setStatus('analyzeStatus', 'analyzeText', 'analyzeSpinner', e.message, 'error', false);
@@ -431,9 +432,9 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ videoUrl: url, language: lang })
     });
-    if (!res.ok) throw new Error(`Server returned ${res.status}`);
-    const summary = await res.text();
-    setStatus('videoStatus', 'videoText', 'videoSpinner', `Done! Summary: ${summary}`, 'success', false);
+    const bodyText = await res.text();
+    if (!res.ok) throw new Error(bodyText || `Server returned ${res.status}`);
+    setStatus('videoStatus', 'videoText', 'videoSpinner', `Done! Summary: ${bodyText}`, 'success', false);
   } catch (e) {
     setStatus('videoStatus', 'videoText', 'videoSpinner', e.message, 'error', false);
   } finally {
